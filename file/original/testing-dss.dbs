@@ -1,0 +1,126 @@
+<root>
+<data enableBoxcarring="true" name="testing-dss" serviceNamespace="DataService" transports="http https local">
+   <config enableOData="false" id="testingdso">
+      <property name="carbon_datasource_name">SqlServer</property>
+   </config>
+   <config enableOData="false" id="testingdso2">
+      <property name="carbon_datasource_name">OMSocket</property>
+   </config>
+   <query id="getColumnMstCollAttendance" useConfig="testingdso">
+      <sql>SELECT 1 as attCode, 1 attName, 1 attendFlag, 1 cashFlag, 1 utjFlag</sql>
+      <result element="Entries" rowName="">
+         <element column="attCode" name="attCode" xsdType="string"/>
+         <element column="attName" name="attName" xsdType="string"/>
+         <element column="attendFlag" name="attendFlag" xsdType="string"/>
+         <element column="cashFlag" name="cashFlag" xsdType="string"/>
+         <element column="utjFlag" name="utjFlag" xsdType="string"/>
+      </result>
+   </query>
+   <query id="getCountMstCollAttendance" useConfig="testingdso">
+      <sql>SELECT COUNT(*) as total FROM (&#xd;	SELECT &#xd;		A.company_code companyCode,&#xd;		A.att_code attCode,&#xd;		A.att_name attName,&#xd;		A.attend_flag attendFlag,&#xd;		A.cash_flag cashFlag,&#xd;		A.utj_flag utjFlag,&#xd;		A.flag_Active flagActive,&#xd;		CONVERT(varchar, A.UPDATE_DATE, 121) as updatedDateStr&#xd;	FROM MST_COLL_ATTENDANCE A&#xd;) t WHERE :search :filter</sql>
+      <result element="count" rowName="">
+         <element column="total" name="total" xsdType="string"/>
+      </result>
+      <param name="search" optional="false" sqlType="QUERY_STRING"/>
+      <param name="filter" optional="false" sqlType="QUERY_STRING"/>
+   </query>
+   <query id="getDataMstCollAttendance" useConfig="testingdso">
+      <sql>SELECT companyCode, attCode, attName, attendFlag, cashFlag, utjFlag, flagActive, updatedDateStr FROM (&#xd;	SELECT &#xd;		A.company_code companyCode,&#xd;		A.att_code attCode,&#xd;		A.att_name attName,&#xd;		A.attend_flag attendFlag,&#xd;		A.cash_flag cashFlag,&#xd;		A.utj_flag utjFlag,&#xd;		A.flag_Active flagActive,&#xd;		CONVERT(varchar, A.UPDATE_DATE, 121) as updatedDateStr&#xd;	FROM MST_COLL_ATTENDANCE A&#xd;) a WHERE :search :filter ORDER BY :orderBy :direction OFFSET :page ROWS FETCH NEXT :limit ROWS ONLY</sql>
+      <result element="Entries" rowName="contents">
+         <element column="companyCode" name="companyCode" xsdType="string"/>
+         <element column="attCode" name="attCode" xsdType="string"/>
+         <element column="attName" name="attName" xsdType="string"/>
+         <element column="attendFlag" name="attendFlag" xsdType="string"/>
+         <element column="cashFlag" name="cashFlag" xsdType="string"/>
+         <element column="utjFlag" name="utjFlag" xsdType="string"/>
+         <element column="flagActive" name="flagActive" xsdType="string"/>
+         <element column="updatedDateStr" name="updatedDateStr" xsdType="string"/>
+      </result>
+      <param name="search" optional="false" sqlType="QUERY_STRING"/>
+      <param name="filter" optional="false" sqlType="QUERY_STRING"/>
+      <param name="orderBy" optional="false" sqlType="QUERY_STRING"/>
+      <param name="direction" optional="false" sqlType="QUERY_STRING"/>
+      <param name="page" optional="false" sqlType="INTEGER"/>
+      <param name="limit" optional="false" sqlType="INTEGER"/>
+   </query>
+   <query id="insertMstBucket" returnUpdatedRowCount="true" useConfig="testingdso">
+      <sql>INSERT INTO MST_BUCKET&#xd;(&#xd;    COMPANY_CODE,&#xd;    BUCKET_CODE,&#xd;    PRODUCT_CODE,&#xd;    DESCRIPTION,&#xd;    BUCKET_TYPE,&#xd;    OD_DAY_FROM,&#xd;    OD_DAY_TO,&#xd;    FLAG_ACTIVE,&#xd;	FLAG_REVITALIZATION,&#xd;    CREATED_DATE,&#xd;    CREATED_BY&#xd;)&#xd;VALUES&#xd;(&#xd;    :companyCode,&#xd;    :bucketCode,&#xd;    :productCode,&#xd;    :description,&#xd;    :bucketType,&#xd;    :odDayFrom,&#xd;    :odDayTo,&#xd;    :flagActive,&#xd;	:flagRevitalisasi,&#xd;    GETDATE(),&#xd;    :createdBy&#xd;)</sql>
+      <result element="UpdatedRowCount" rowName="" useColumnNumbers="true">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param name="companyCode" sqlType="STRING"/>
+      <param name="bucketCode" sqlType="STRING"/>
+      <param name="productCode" sqlType="STRING"/>
+      <param name="description" sqlType="STRING"/>
+      <param name="bucketType" sqlType="STRING"/>
+      <param name="odDayFrom" sqlType="STRING"/>
+      <param name="odDayTo" sqlType="STRING"/>
+      <param name="flagActive" sqlType="STRING"/>
+      <param name="flagRevitalisasi" sqlType="STRING"/>
+      <param name="createdBy" sqlType="STRING"/>
+   </query>
+   <query id="updateMstBucket" returnUpdatedRowCount="true" useConfig="testingdso">
+      <sql>UPDATE MST_BUCKET SET&#xd;	DESCRIPTION = :description,&#xd;	OD_DAY_FROM = :odDayFrom,&#xd;	OD_DAY_TO = :odDayTo,&#xd;	FLAG_ACTIVE = :flagActive,&#xd;	FLAG_REVITALIZATION = :flagRevitalisasi,&#xd;    UPDATED_DATE = GETDATE(),&#xd;	UPDATED_BY = :updateBy&#xd;WHERE&#xd;	COMPANY_CODE = :companyCode AND BUCKET_CODE = :bucketCode AND BUCKET_TYPE = :bucketType AND PRODUCT_CODE = :productCode</sql>
+      <result element="UpdatedRowCount" rowName="" useColumnNumbers="true">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param name="description" sqlType="STRING"/>
+      <param name="odDayFrom" sqlType="STRING"/>
+      <param name="odDayTo" sqlType="STRING"/>
+      <param name="flagActive" sqlType="STRING"/>
+      <param name="flagRevitalisasi" sqlType="STRING"/>
+      <param name="updateBy" sqlType="STRING"/>
+      <param name="companyCode" sqlType="STRING"/>
+      <param name="bucketCode" sqlType="STRING"/>
+      <param name="bucketType" sqlType="STRING"/>
+      <param name="productCode" sqlType="STRING"/>
+   </query>
+   <resource method="GET" path="/getColumn/mstCollAttendance">
+      <call-query href="getColumnMstCollAttendance"/>
+   </resource>
+   <resource method="POST" path="/getCount/mstCollAttendance">
+      <call-query href="getCountMstCollAttendance">
+         <with-param name="search" query-param="search"/>
+         <with-param name="filter" query-param="filter"/>
+      </call-query>
+   </resource>
+   <resource method="POST" path="/getData/mstCollAttendance">
+      <call-query href="getDataMstCollAttendance">
+         <with-param name="search" query-param="search"/>
+         <with-param name="filter" query-param="filter"/>
+         <with-param name="orderBy" query-param="orderBy"/>
+         <with-param name="direction" query-param="direction"/>
+         <with-param name="page" query-param="page"/>
+         <with-param name="limit" query-param="limit"/>
+      </call-query>
+   </resource>
+   <resource method="POST" path="/mstBucket">
+      <call-query href="insertMstBucket">
+         <with-param name="companyCode" query-param="companyCode"/>
+         <with-param name="bucketCode" query-param="bucketCode"/>
+         <with-param name="productCode" query-param="productCode"/>
+         <with-param name="description" query-param="description"/>
+         <with-param name="bucketType" query-param="bucketType"/>
+         <with-param name="odDayFrom" query-param="odDayFrom"/>
+         <with-param name="odDayTo" query-param="odDayTo"/>
+         <with-param name="flagActive" query-param="flagActive"/>
+         <with-param name="flagRevitalisasi" query-param="flagRevitalisasi"/>
+         <with-param name="createdBy" query-param="createdBy"/>
+      </call-query>
+   </resource>
+   <resource method="PUT" path="/mstBucket">
+      <call-query href="updateMstBucket">
+         <with-param name="description" query-param="description"/>
+         <with-param name="odDayFrom" query-param="odDayFrom"/>
+         <with-param name="odDayTo" query-param="odDayTo"/>
+         <with-param name="flagActive" query-param="flagActive"/>
+         <with-param name="flagRevitalisasi" query-param="flagRevitalisasi"/>
+         <with-param name="updateBy" query-param="updateBy"/>
+         <with-param name="companyCode" query-param="companyCode"/>
+         <with-param name="bucketCode" query-param="bucketCode"/>
+         <with-param name="bucketType" query-param="bucketType"/>
+         <with-param name="productCode" query-param="productCode"/>
+      </call-query>
+   </resource>
+</data>
+</root>
