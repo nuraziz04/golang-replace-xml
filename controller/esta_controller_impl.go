@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/nuraziz04/golang-esta/exception"
@@ -51,7 +52,7 @@ func (controller *EstaControllerImpl) Generate(writer http.ResponseWriter, reque
 		configCell := row.Cells[1]
 		id := idCell.String()
 		config := configCell.String()
-		idReplacements[id] = config
+		idReplacements[strings.ToLower(id)] = config
 	}
 
 	// Get the absolute path of the file
@@ -76,7 +77,7 @@ func (controller *EstaControllerImpl) Generate(writer http.ResponseWriter, reque
 	// Replace the IDs in the queries
 	for i := range queries.Data.Queries {
 		query := &queries.Data.Queries[i]
-		if newConfig, ok := idReplacements[query.ID]; ok {
+		if newConfig, ok := idReplacements[strings.ToLower(query.ID)]; ok {
 			query.UseConfig = newConfig
 		}
 	}
